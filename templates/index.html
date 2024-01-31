@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+  	<head>
+		<script src="{{ url_for('static', filename='assets/js/color-modes.js')}}"></script>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+		<meta name="generator" content="Hugo 0.118.2">
+
+		<title>Recomendación de Restaurants (Café)</title>
+
+		<link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/album/">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+		
+		<link href="{{ url_for('static', filename='assets/dist/css/bootstrap.min.css')}}" rel="stylesheet">
+		<link href="{{ url_for('static', filename='css/restaurants.css') }}" rel="stylesheet">
+
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+		<script src="{{ url_for('static', filename='assets/dist/js/bootstrap.bundle.min.js')}}"></script>
+
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+		
+		<script>
+			const stars_container = document.getElementsByClassName('stars-container');
+			for(let element of stars_container){
+				let rate = element.getAttribute('data-rate');
+				let starsfill = element.getElementsByClassName('starfill');
+				for(let i = 0; i < 5; i++){
+					let star = element.getElementsByClassName('starfill')[i];
+					if (rate > i) {
+						if (rate < i+1) {
+							// If the rating is between i and i+1, set the width of the star to represent the fractional part
+							star.style.width = `${(rate - i) * 100 }%`;
+						} else {
+							// If the rating is greater than i, set the width of the star to 100%
+							star.style.width = '100%';
+						}
+					} else {
+						// If the rating is less than i, set the width of the star to 0%
+						star.style.width = '0%';
+					}
+				}
+
+			}
+		</script>
+	</head>
+	<body>
+		<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+			<symbol id="check2" viewBox="0 0 16 16">
+				<path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+			</symbol>
+			<symbol id="circle-half" viewBox="0 0 16 16">
+				<path d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
+			</symbol>
+			<symbol id="moon-stars-fill" viewBox="0 0 16 16">
+				<path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+				<path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/>
+			</symbol>
+			<symbol id="sun-fill" viewBox="0 0 16 16">
+				<path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+			</symbol>
+		</svg>
+		<div class="container" >
+			<h3 class="text-3xl font-bold pb-4">Todos los restaurants</h3>
+			{% set restaurants_per_page = 9 %}
+			{% set total_pages = (restaurants|length // restaurants_per_page) + 1 %}
+	
+			<!-- Obtén el número de página actual (puedes pasarlo desde tu backend) -->
+			{% set current_page = current_page|default(1) %}
+	
+			<!-- Obtiene los restaurantes correspondientes a la página actual -->
+			{% set start_index = (current_page - 1) * restaurants_per_page %}
+			{% set end_index = start_index + restaurants_per_page %}
+			{% set current_restaurants = restaurants[start_index:end_index] %}
+
+			{% set start_index = (current_page - 1) * restaurants_per_page %}
+			{% set end_index = start_index + restaurants_per_page %}
+			{% set current_restaurants = restaurants[start_index:end_index] %}
+	
+			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+			{% for restaurant in current_restaurants %}
+				<div class="col">
+				  <div class="card shadow-sm">
+					<!--<svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>-->
+					{% if restaurant.image_url %}
+						<img class="card-img-top img-fluid" style="height: 225px; object-fit: cover;" src="{{ restaurant.image_url }}" alt="Imagen del restaurante">
+					{% else %}
+						<div class="card-img-top img-fluid" style="height: 225px; object-fit: cover; background-color: #55595c;"></div>
+					{% endif %}
+					<!--<img class="card-img-top" width="100%" style="height: 225px; object-fit: cover; background-color: #55595c;" src="{{ restaurant.image_url }}" alt="Imagen del restaurante" onerror="this.src='ruta_de_imagen_de_relleno_o_gris.jpg'">-->
+					<div class="position-absolute top-50 start-50 translate-middle text-center" width="100%" style="height: 200px;">
+						<h3 class="text-3xl font-bold pb-4" >{{ restaurant.name }}</h3>
+					</div>
+					<div class="card-body">
+						<p class="card-text text-xl font-bold pb-4"><a href="/detalle/{{restaurant.restaurant_id}}">{{ restaurant.name }}</a></p>
+						<!--<p class="card-text" >{{ restaurant.address }}</p>-->
+						<div class="d-flex">
+							<!--<div class="btn-group">
+								<button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+								<button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+							</div>-->
+							<!--<span class="badge rounded-pill text-bg-warning">{{restaurant.ranking_caba}}</span>-->
+							<!-- change data-rate to increase or deacrease the amount -->
+							<small class="text-body-secondary"></small><span class="badge rounded-pill text-bg-success">{{ restaurant.rating }} </span></small>
+							<p> 
+								{% set full_stars = restaurant.rating |  int %}
+								{% set half_star = restaurant.rating - full_stars >= 0.5 %}
+								{% set empty_stars = 5 - full_stars - (1 if half_star else 0) %}
+						
+								{% for i in range(1, full_stars + 1) %}
+									<i class="fas fa-star"></i>
+								{% endfor %}
+								{% if half_star %}
+									<i class="fas fa-star-half-alt"></i>
+								{% endif %}
+								{% for i in range(1, empty_stars + 1) %}
+									<i class="far fa-star"></i>
+								{% endfor %}
+							</p>
+							
+							<!--<label for="input-3" class="control-label">Rating:</label>
+							<input id="input-3" name="input-3" value="{{restaurant.rating}}" class="rating rating-loading" data-min="0" data-max="5" data-step="1" data-readonly="true">
+							-->
+						</div>
+					</div>
+				  </div>
+				</div>
+			{% endfor %}
+			</div>
+	
+			<nav aria-label="Page navigation">
+				<ul class="pagination justify-content-center">
+					{% set max_pages_displayed = 5 %}
+					
+					{% if current_page > 1 %}
+						<li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+						{% if current_page > 2 %}
+							<li class="page-item disabled"><span class="page-link">...</span></li>
+						{% endif %}
+					{% endif %}
+					
+					{% set start_display = current_page - max_pages_displayed // 2 %}
+					{% if start_display < 1 %}
+						{% set start_display = 1 %}
+					{% endif %}
+					
+					{% set end_display = current_page + max_pages_displayed // 2 %}
+					{% if end_display > total_pages %}
+						{% set end_display = total_pages %}
+					{% endif %}
+					
+					{% for page in range(start_display, end_display + 1) %}
+						<li class="page-item {% if page == current_page %}active{% endif %}">
+							<a class="page-link" href="?page={{ page }}">{{ page }}</a>
+						</li>
+					{% endfor %}
+					
+					{% if current_page < total_pages %}
+						{% if current_page < total_pages - 1 %}
+							<li class="page-item disabled"><span class="page-link">...</span></li>
+						{% endif %}
+						<li class="page-item"><a class="page-link" href="?page={{ total_pages }}">{{ total_pages }}</a></li>
+					{% endif %}
+				</ul>
+			</nav>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="{{ url_for('static', filename='assets/dist/css/bootstrap.min.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+
+    <title>Detalles del Restaurante</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #fff;
+        }
+
+		#map {
+            height: 300px;
+            margin-bottom: 20px;
+        }
+    </style>
+	<script>
+		function initMap() {
+			var restaurantLocation = { lat: {{ restaurant.latitude }}, lng: {{ restaurant.longitude }} };
+
+			var map = new google.maps.Map(document.getElementById('map'), {
+				center: restaurantLocation,
+				zoom: 15 
+			});
+	
+			var marker = new google.maps.Marker({
+				position: restaurantLocation,
+				map: map,
+				title: '{{ restaurant.name }}'
+			});
+		}
+	</script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBnnzmm550Bo1McFJZ_MCaQ5IKha6TH8G8&callback=initMap" async defer></script>
+	
+</head>
+<body>
+    <div class="container mt-5">
+		<h1>{{ restaurant.name }}</h1>
+		{% if restaurant.image_url %}
+			<img class="card-img-top img-fluid" style="height: 400px; object-fit: cover;" src="{{ restaurant.image_url }}" alt="Imagen del restaurante">
+		{% else %}
+			<div class="card-img-top img-fluid" style="height: 400px; object-fit: cover; background-color: #55595c;"></div>
+		{% endif %}
+		<div class="row">
+			<div class="col-md-6">
+				<div class="mt-4">
+					<h4>Calificaciones y opiniones</h4>
+					<!--<p>Nº {{ restaurant.ranking_caba }} de 530 restaurants</p>-->
+					<div class="row">
+						<div class="col-8">
+							<h5>
+								{% set full_stars = restaurant.rating |  int %}
+								{% set half_star = restaurant.rating is not none and restaurant.rating - full_stars >= 0.5 %}
+								{% set empty_stars = 5 - full_stars - (1 if half_star else 0) %}
+						
+								{% for i in range(1, full_stars + 1) %}
+									<i class="fas fa-star"></i>
+								{% endfor %}
+								{% if half_star %}
+									<i class="fas fa-star-half-alt"></i>
+								{% endif %}
+								{% for i in range(1, empty_stars + 1) %}
+									<i class="far fa-star"></i>
+								{% endfor %}
+								<span class="badge rounded-pill text-bg-success">{{ restaurant.rating }} </span>
+							</h5>
+						</div>
+						<div class="col-4">
+							<h6><b>{{restaurant.num_reviews}} opiniones</b></h6>
+						</div>
+					</div>
+					<hr class="my-4">
+						<div class="container text-align">
+							<div class="row">
+								<div class="col">
+									<p>Comida:</p>
+								</div>
+								<div class="col">
+									<p>
+										{% set full_stars = restaurant.califications_comida |  int %}
+										{% set half_star = restaurant.califications_comida is not none and restaurant.califications_comida - full_stars >= 0.5 %}
+										{% set empty_stars = 5 - full_stars - (1 if half_star else 0) %}
+								
+										{% for i in range(1, full_stars + 1) %}
+											<i class="fas fa-star"></i>
+										{% endfor %}
+										{% if half_star %}
+											<i class="fas fa-star-half-alt"></i>
+										{% endif %}
+										{% for i in range(1, empty_stars + 1) %}
+											<i class="far fa-star"></i>
+										{% endfor %}
+									</p>
+								</div>
+								<div class="col">
+									<span class="badge rounded-pill text-bg-success">{{ restaurant.califications_comida }} </span>
+								</div>
+							</div>
+							<div class="row">
+									<div class="col">
+										<p>Servicio:</p>
+									</div>
+									<div class="col">
+										<p>
+										{% set full_stars = restaurant.califications_servicio |  int %}
+										{% set half_star = restaurant.califications_servicio is not none and restaurant.califications_servicio - full_stars >= 0.5 %}
+										{% set empty_stars = 5 - full_stars - (1 if half_star else 0) %}
+								
+										{% for i in range(1, full_stars + 1) %}
+											<i class="fas fa-star"></i>
+										{% endfor %}
+										{% if half_star %}
+											<i class="fas fa-star-half-alt"></i>
+										{% endif %}
+										{% for i in range(1, empty_stars + 1) %}
+											<i class="far fa-star"></i>
+										{% endfor %}
+										</p>
+									</div>
+									<div class="col">
+										<span class="badge rounded-pill text-bg-success">{{ restaurant.califications_servicio }} </span>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col">
+										<p>Calidad-Precio:</p>
+									</div>
+									<div class="col">
+										<p>
+										{% set full_stars = restaurant.califications_calidad_precio |  int %}
+										{% set half_star = restaurant.califications_calidad_precio is not none and restaurant.califications_calidad_precio - full_stars >= 0.5 %}
+										{% set empty_stars = 5 - full_stars - (1 if half_star else 0) %}
+								
+										{% for i in range(1, full_stars + 1) %}
+											<i class="fas fa-star"></i>
+										{% endfor %}
+										{% if half_star %}
+											<i class="fas fa-star-half-alt"></i>
+										{% endif %}
+										{% for i in range(1, empty_stars + 1) %}
+											<i class="far fa-star"></i>
+										{% endfor %}
+										</p>
+									</div>
+									<div class="col">
+										<span class="badge rounded-pill text-bg-success">{{ restaurant.califications_calidad_precio }} </span>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col">
+										<p>Ambiente: </p>
+									</div>
+									<div class="col">
+										<p>
+										{% set full_stars = restaurant.califications_ambiente |  int %}
+										{% set half_star = restaurant.califications_ambiente is not none and restaurant.califications_ambiente - full_stars >= 0.5 %}
+										{% set empty_stars = 5 - full_stars - (1 if half_star else 0) %}
+								
+										{% for i in range(1, full_stars + 1) %}
+											<i class="fas fa-star"></i>
+										{% endfor %}
+										{% if half_star %}
+											<i class="fas fa-star-half-alt"></i>
+										{% endif %}
+										{% for i in range(1, empty_stars + 1) %}
+											<i class="far fa-star"></i>
+										{% endfor %}
+										</p>
+									</div>
+									<div class="col">
+										<span class="badge rounded-pill text-bg-success">{{ restaurant.califications_ambiente }} </span>
+									</div>
+								</div>
+							</div>
+							<hr class="my-4">
+							<h4>Traveler Ratings</h4>
+							<div class="container text-align">
+								<div class="row">
+									<div class="col">
+										<p>Excelente:</p>
+									</div>
+									<div class="col-6">
+										<div class="progress">
+											<div class="progress-bar bg-secondary" role="progressbar" style="width: {{ (restaurant.traveler_rating_excelente / restaurant.num_reviews) * 100 }}%;" aria-valuenow="{{ restaurant.traveler_rating_excelente }}" aria-valuemin="0" aria-valuemax="{{ restaurant.num_reviews }}"></div>
+										</div>
+									</div>
+									<div class="col">
+										<span class="badge rounded-pill text-bg-secondary">{{ restaurant.traveler_rating_excelente }}</span>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col">
+										<p>Muy bueno:</p>
+									</div>
+									<div class="col-6">
+										<div class="progress">
+											<div class="progress-bar bg-secondary" role="progressbar" style="width: {{ (restaurant.traveler_rating_muy_bueno / restaurant.num_reviews) * 100 }}%;" aria-valuenow="{{ restaurant.traveler_rating_muy_bueno }}" aria-valuemin="0" aria-valuemax="{{ restaurant.num_reviews }}"></div>
+										</div>
+									</div>
+									<div class="col">
+										<span class="badge rounded-pill text-bg-secondary">{{ restaurant.traveler_rating_muy_bueno }}</span>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col">
+										<p>Regular:</p>
+									</div>
+									<div class="col-6">
+										<div class="progress">
+											<div class="progress-bar bg-secondary" role="progressbar" style="width: {{ (restaurant.traveler_rating_regular / restaurant.num_reviews) * 100 }}%;" aria-valuenow="{{ restaurant.traveler_rating_regular }}" aria-valuemin="0" aria-valuemax="{{ restaurant.num_reviews }}"></div>
+										</div>
+									</div>
+									<div class="col">
+										<span class="badge rounded-pill text-bg-secondary">{{ restaurant.traveler_rating_regular }}</span>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col">
+										<p>Malo:</p>
+									</div>
+									<div class="col-6">
+										<div class="progress">
+											<div class="progress-bar bg-secondary" role="progressbar" style="width: {{ (restaurant.traveler_rating_horrible / restaurant.num_reviews) * 100 }}%;" aria-valuenow="{{ restaurant.traveler_rating_horrible }}" aria-valuemin="0" aria-valuemax="{{ restaurant.num_reviews }}"></div>
+										</div>
+									</div>
+									<div class="col">
+										<span class="badge rounded-pill text-bg-secondary">{{ restaurant.traveler_rating_malo }}</span>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col">
+										<p>Horrible:</p>
+									</div>
+									<div class="col-6">
+										<div class="progress">
+											<div class="progress-bar bg-secondary" role="progressbar" style="width: {{ (restaurant.traveler_rating_horrible / restaurant.num_reviews) * 100 }}%;" aria-valuenow="{{ restaurant.traveler_rating_horrible }}" aria-valuemin="0" aria-valuemax="{{ restaurant.num_reviews }}"></div>
+										</div>
+									</div>
+									<div class="col">
+										<span class="badge rounded-pill text-bg-secondary">{{ restaurant.traveler_rating_horrible }}</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="mt-4">
+							<h5>Información de Contacto</h5>
+							<p>Dirección: {{ restaurant.address }} {{ restaurant.postalcode }}</p>
+							<p>Teléfono: {{ restaurant.phone }}</p>
+							<p>Sitio web: <a href="{{ restaurant.website }}" target="_blank">{{ restaurant.website }}</a></p>
+						</div>
+						<div class="mt-4">
+							<h5>Ubicación</h5>
+							<div id="map"></div>
+						</div>
+					</div>
+				</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

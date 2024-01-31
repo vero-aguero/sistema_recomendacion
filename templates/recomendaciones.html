@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+  	<head>
+		<script src="{{ url_for('static', filename='assets/js/color-modes.js')}}"></script>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+		<meta name="generator" content="Hugo 0.118.2">
+
+		<title>Recomendación de Restaurants-Cafés</title>
+
+		<link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/album/">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+		
+		<link href="{{ url_for('static', filename='assets/dist/css/bootstrap.min.css')}}" rel="stylesheet">
+		<link href="{{ url_for('static', filename='css/restaurants.css') }}" rel="stylesheet">
+
+		<!--<script src="https://cdn.tailwindcss.com"></script>-->
+		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+		<script src="{{ url_for('static', filename='assets/dist/js/bootstrap.bundle.min.js')}}"></script>
+
+		<!--<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
+		
+		<script>
+			const stars_container = document.getElementsByClassName('stars-container');
+			for(let element of stars_container){
+				let rate = element.getAttribute('data-rate');
+				let starsfill = element.getElementsByClassName('starfill');
+				for(let i = 0; i < 5; i++){
+					let star = element.getElementsByClassName('starfill')[i];
+					if (rate > i) {
+						if (rate < i+1) {
+							star.style.width = `${(rate - i) * 100 }%`;
+						} else {
+							star.style.width = '100%';
+						}
+					} else {
+						star.style.width = '0%';
+					}
+				}
+			}
+			$(document).ready(function() {
+				$('#puntuacion').change(function() {
+					var puntuacion = parseInt($(this).val());
+
+					$('.stars-container i').remove();
+
+					for (var i = 1; i <= puntuacion; i++) {
+						$('.stars-container').append('<i class="fas fa-star"></i>');
+					}
+
+					for (var i = Math.ceil(puntuacion); i < 5; i++) {
+						$('.stars-container').append('<i class="far fa-star"></i>');
+					}
+				});
+			});
+			function reloadPage() {
+				location.reload();
+			}
+			function set_restaurant_id(restaurantId){
+				document.getElementById('restaurant_id_input').value = restaurantId;
+			}
+ 		</script>
+	</head>
+	<body>
+		<div class="container" >
+			<div class="d-flex align-items-center">
+				<img class="mb-4" src="{{ url_for('static', filename='assets/brand/coffee.png')}}" alt="" width="72" height="57">
+				<h3 class="text-3xl font-bold pb-4">Recomendación de Restaurants-Cafés</h3>
+			</div>	
+			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+			{% for restaurant in restaurants %}
+				<div class="col">
+				  	<div class="card shadow-sm">
+						{% if restaurant.image_url %}
+							<img class="card-img-top img-fluid" style="height: 225px; object-fit: cover;" src="{{ restaurant.image_url }}" alt="Imagen del restaurante">
+						{% else %}
+							<div class="card-img-top img-fluid" style="height: 225px; object-fit: cover; background-color: #55595c;"></div>
+						{% endif %}
+						<div class="position-absolute top-50 start-50 translate-middle text-center" width="100%" style="height: 200px;">
+							<h3 class="text-3xl font-bold pb-4" >{{ restaurant.name }}</h3>
+						</div>
+						<div class="card-body">
+							<h4><a href="/detalle/{{restaurant.restaurant_id}}">{{ restaurant.name }}</a></h4>
+							<div class="row align-items-start">
+								<div class="col">
+									<span class="badge rounded-pill text-bg-success">{{ restaurant.rating }} </span>
+								</div>
+								<div class="col">
+									{% set full_stars = restaurant.rating |  int %}
+									{% set half_star = restaurant.rating is not none and restaurant.rating - full_stars >= 0.5 %}
+									{% set empty_stars = 5 - full_stars - (1 if half_star else 0) %}
+							
+									{% for i in range(1, full_stars + 1) %}
+										<i class="fas fa-star"></i>
+									{% endfor %}
+									{% if half_star %}
+										<i class="fas fa-star-half-alt"></i>
+									{% endif %}
+									{% for i in range(1, empty_stars + 1) %}
+										<i class="far fa-star"></i>
+									{% endfor %}
+								</div>
+								<div class="col">
+									<button type="button" id="puntuar" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#puntuacionModal" data-restaurant-id="{{ restaurant.restaurant_id }}" onclick="set_restaurant_id( {{ restaurant.restaurant_id }} )" >
+										Puntuar
+									</button>
+								</div>
+							</div>
+						</div>
+				  	</div>
+				</div>
+				{% endfor %}
+			</div>
+			<div class="flex justify-benween">
+				<button type="submit" class="btn btn-primary" onclick="reloadPage()">Más recomendaciones</button>
+			</div>
+			<div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
+				<p> Usuario: {{ nick }} - Cant. valorados: {{ cant_valorados }} - Cant. ignorados: {{ cant_ignorados}} - <a href="/reset" class="btn btn-primary btn-sm">Reset</a></p>
+			</div>
+		</form>
+		<div id="modal-container">
+			<div class="modal fade" id="puntuacionModal" tabindex="-1" aria-labelledby="puntuacionModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="puntuacionModalLabel">Mi Puntuación</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+						  	<div class="container">
+								<form action="{{ url_for('guardar_review') }}" method="post">
+									<input type="hidden" id="restaurant_id_input" name="restaurant_id" value="">
+									<div class="row mb-3 align-items-center">
+										<label for="puntuacion" class="col-3 p-3 mb-2 col-form-label">Puntuación:</label>
+										<div class="col-3 p-3 mb-2">
+											<input type="number" class="form-control col-sm-2" id="puntuacion" name="puntuacion" min="1" max="5" required>
+										</div>
+										<div class="col-6 col-sm-4">
+											<div class="stars-container"></div>
+										</div>
+									</div>
+									<div class="row mb-3">
+										<label for="titulo" class="col-3 p-3 mb-2 col-form-label">Título:</label>
+										<div class="col-sm-9 p-3">
+											<input type="text" class="form-control" id="titulo" name="titulo" required>
+										</div>
+									</div>
+									<div class="row mb-3">
+										<label for="review" class="col-3 p-3 mb-2 col-form-label">Review:</label>
+										<div class="col-sm-9 p-3">
+											<textarea class="form-control" id="review" name="review" rows="4" required></textarea>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-10 offset-sm-2">
+											<button type="submit" class="btn btn-primary">Guardar</button>
+										</div>
+							   		</div>
+								</div>
+					  		</div>
+						</div>
+				  	</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
